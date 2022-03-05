@@ -19,6 +19,7 @@ services:
     volumes:
       - ./db/:/app
     command: sh -c "python manage.py runserver 0.0.0.0:8000"
+    container_name: database
 
   telegram-bot:
     build: bot/
@@ -31,3 +32,4 @@ services:
     network_mode: host
     depends_on:
       - database
+    container_name: telegram-bot
