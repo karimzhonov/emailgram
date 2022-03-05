@@ -1,8 +1,8 @@
 from aiogram import types
 from aiogram.dispatcher.filters import CommandHelp
 
-from bot import dp
-from bot.utils import render_message as _
+from loader import dp
+from utils import render_message as _
 
 @dp.message_handler(CommandHelp())
 async def thelp(msg: types.Message):

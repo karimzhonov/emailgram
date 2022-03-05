@@ -6,8 +6,8 @@ class User(models.Model):
     first_name = models.CharField(max_length=255, default='')
     last_name = models.CharField(max_length=255, default='')
     username = models.SlugField(max_length=255, default='')
-    language_code = models.CharField(max_length=10, default=None)
-    is_bot = models.BooleanField(default=None)
+    language_code = models.CharField(max_length=10, default='')
+    is_bot = models.BooleanField(default=False)
     is_admin = models.BooleanField(default=False)
     user_id = models.IntegerField()
 

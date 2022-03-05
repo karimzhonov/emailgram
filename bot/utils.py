@@ -3,15 +3,15 @@ import logging
 from aiogram import types, Dispatcher
 from aiogram.dispatcher.storage import FSMContext
 
-from database.models import User
 from config import APPNAME, ROUTER_DICT
+from api_requests import get_admins
 
 
 async def on_startup_notify(dp: Dispatcher):
-    admins = await User.get_admins()
+    admins = await get_admins()
     for admin in admins:
         try:
-            await dp.bot.send_message(admin.user_id, "Бот Запущен")
+            await dp.bot.send_message(admin['user_id'], "Бот Запущен ----------")
 
         except Exception as err:
             logging.exception(err)

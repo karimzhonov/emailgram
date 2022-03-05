@@ -1,0 +1,33 @@
+version: '0.0.1'
+
+services:
+  database:
+    build: db/
+    restart: always
+    environment:
+      - DEBUG=1
+      - LANGUAGE_CODE=en-us
+      - db_engine=django.db.backends.postgresql_psycopg2
+      - db_name=dai5r9sal5lpok
+      - db_user=gjegxmrdprzlsa
+      - db_password=f842922283f1903599838a6b72fdca7d615066122f2c8009c30e4037ac7d2ebf
+      - db_host=ec2-54-195-246-55.eu-west-1.compute.amazonaws.com
+      - db_port=5432
+    ports:
+      - 5432:5432
+      - 8000:8000
+    volumes:
+      - ./db/:/app
+    command: sh -c "python manage.py runserver 0.0.0.0:8000"
+
+  telegram-bot:
+    build: bot/
+    restart: always
+    environment:
+      - token=5235447854:AAHd1gpO-pDVQxP8frCutBEr3yx5bj9LFmw
+    volumes:
+      - ./bot/:/app
+    command: sh -c "python run.py"
+    network_mode: host
+    depends_on:
+      - database

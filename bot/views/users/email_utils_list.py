@@ -1,12 +1,10 @@
 from aiogram import types
 from aiogram.dispatcher.storage import FSMContext
 
-from bot import dp
-from bot.storage import Session
-from bot.utils import Message, render_message as _
-
-from database.models import Mail
-
+from loader import dp
+from storage import Session
+from utils import Message, render_message as _
+from api_requests import email_get
 
 class EmailUtilsList(Message):
     keyboard = types.InlineKeyboardMarkup(inline_keyboard=[
@@ -30,21 +28,21 @@ class EmailUtilsList(Message):
 @dp.callback_query_handler(lambda c: c.data == 'email_exit', state=Session.email_util_name)
 async def exit_account(call: types.CallbackQuery, state: FSMContext):
     data = await state.get_data()
-    mail = await Mail.get(user_id=call.from_user.id, email=data['email_name'])
+    mail = await email_get(user_id=call.from_user.id, email=data['email_name'])
     await mail.remove()
 
     await back_to_emails_list(call, state)
 
 @dp.callback_query_handler(lambda c: c.data == 'back_to_emails_list', state=Session.email_util_name)
 async def back_to_emails_list(call: types.CallbackQuery, state: FSMContext):
-    from bot.views.users.emails_list import EmailAccountList
+    from views.users.emails_list import EmailAccountList
 
     await Session.email_name.set()
     await EmailAccountList(call, state).render()
 
 @dp.callback_query_handler(state=Session.email_util_name)
 async def open_email_util(call: types.CallbackQuery, state: FSMContext):
-    from bot.views.users.inbox_message_list import InboxMessageList
+    from views.users.inbox_message_list import InboxMessageList
 
     await Session.email_msg.set()
     await state.update_data({

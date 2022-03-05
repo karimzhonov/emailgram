@@ -1,5 +1,7 @@
-TOKEN = '2085528166:AAGmgNa9ekommCfk1P0JOhNydi1C4qdluAo'
-APPNAME = '<b>📧 Email2Telegram 📱</b>'
+import os
+
+TOKEN = os.environ.get('token')
+APPNAME = '<b>📧 Emailgram 📱</b>'
 
 ROUTER_DICT = {
     'mail': 'Mail',

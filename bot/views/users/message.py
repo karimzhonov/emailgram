@@ -1,9 +1,9 @@
 from aiogram import types
 from aiogram.dispatcher.storage import FSMContext
 
-from bot import dp
-from bot.storage import Session
-from bot.utils import Message, render_message as _
+from loader import dp
+from storage import Session
+from utils import Message, render_message as _
 
 
 class EmailMessage(Message):
@@ -41,7 +41,7 @@ class EmailMessage(Message):
 
 @dp.callback_query_handler(lambda c: c.data == 'back_to_email_message_list', state=Session.email_msg_util_name)
 async def back_to_email_message_list(call: types.CallbackQuery, state: FSMContext):
-    from bot.views.users.inbox_message_list import InboxMessageList
+    from views.users.inbox_message_list import InboxMessageList
 
     await Session.email_msg.set()
     await InboxMessageList(call, state).render()

@@ -1,13 +1,13 @@
 from aiogram import types
 from aiogram.dispatcher.storage import FSMContext
 import asyncio
-from database.models import Mail
-from bot import dp
-from bot.storage import Session
-from bot.client import Client
-from bot.views.users.email_utils_list import back_to_emails_list
-from bot.utils import render_message as _
 
+from loader import dp
+from storage import Session
+from client import Client
+from views.users.email_utils_list import back_to_emails_list
+from utils import render_message as _
+from api_requests import email_create
 
 class AddEmailForm:
     back_to_email_list_kb = types.InlineKeyboardMarkup(inline_keyboard=[
@@ -85,11 +85,8 @@ class AddEmailForm:
         status = Client(email_name, password, email_type).check_email()
         if status == 'OK':
             await Session.email_name.set()
-            try:
-                await Mail.get(user_id=msg.from_user.id,
-                               email=email_name, email_type=email_type, is_active=True)
-            except Mail.objects.model.DoesNotExist:
-                await Mail.create(msg.from_user.id, password=password,
+
+            await email_create(msg.from_user.id, password=password,
                                   email=email_name, email_type=email_type)
 
             text = self.get_text_response_ok(data)

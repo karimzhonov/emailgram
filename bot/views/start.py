@@ -4,11 +4,10 @@ from aiogram import types
 from aiogram.dispatcher.filters import CommandStart
 from aiogram.dispatcher.storage import FSMContext
 
-from bot import dp
-from bot.storage import Session
-from bot.utils import render_message as _
-
-from database.models import User
+from loader import dp
+from storage import Session
+from utils import render_message as _
+from api_requests import user_get_or_create
 
 
 class StartMessage:
@@ -36,7 +35,7 @@ async def start(msg: types.Message, state: FSMContext = None):
     data = deepcopy(msg.from_user.__dict__['_values'])
     user_id = msg.chat.id
     data.pop('id')
-    await User.get_or_create(user_id, **data)
+    await user_get_or_create(user_id, **data)
     try:
         await state.reset_data()
         await state.update_data(user_id=msg.from_user.id)
@@ -52,7 +51,7 @@ async def start_word(msg: types, state: FSMContext = None):
 
 @dp.callback_query_handler(state=Session.email_type)
 async def email_type_list(call: types.CallbackQuery, state: FSMContext):
-    from bot.views.users.emails_list import EmailAccountList
+    from views.users.emails_list import EmailAccountList
     await Session.email_name.set()
 
     await state.update_data({

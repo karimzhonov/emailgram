@@ -1,14 +1,12 @@
 from aiogram import types
 from aiogram.dispatcher.storage import FSMContext
 
-from bot import dp
-from bot.storage import Session
-from bot.client import Client
-from bot.utils import Message, render_message as _
-
+from loader import dp
+from storage import Session
+from client import Client
+from utils import Message, render_message as _
+from api_requests import email_objects_filter, email_get
 from config import ERROR_AUTH_TEXT
-
-from database.models import Mail
 
 
 class EmailAccountList(Message):
@@ -17,11 +15,11 @@ class EmailAccountList(Message):
         return _(f'{self.data["email_type"]}')
 
     async def get_emails_accounts_keyboard(self):
-        mails = await Mail.get_mails(self.call.message.chat.id, email_type=self.data['email_type'], is_active=True)
+        mails = await email_objects_filter(self.call.message.chat.id, email_type=self.data['email_type'], is_active=True)
         kb = types.InlineKeyboardMarkup()
 
         for mail in mails:
-            callback_data = str(mail.email)
+            callback_data = str(mail['email'])
             kb.inline_keyboard.append([types.InlineKeyboardButton(callback_data, callback_data=callback_data)])
 
         # Add Account
@@ -40,14 +38,14 @@ class EmailAccountList(Message):
 
 @dp.callback_query_handler(lambda c: c.data == 'back_to_email_type', state=Session.email_name)
 async def back_to_email_type(call: types.CallbackQuery, state: FSMContext):
-    from bot.views.start import start
+    from views.start import start
 
     await Session.email_type.set()
     await start(call.message, state)
 
 @dp.callback_query_handler(lambda c: c.data == 'add_email', state=Session.email_name)
 async def add_email(call: types.CallbackQuery, state: FSMContext = None):
-    from bot.views.users.add_email import add_mail_account
+    from views.users.add_email import add_mail_account
 
     await state.update_data(email_name='add_email')
     await add_mail_account(call, state)
@@ -55,7 +53,7 @@ async def add_email(call: types.CallbackQuery, state: FSMContext = None):
 
 @dp.callback_query_handler(state=Session.email_name)
 async def open_mail(call: types.CallbackQuery, state: FSMContext):
-    from bot.views.users.email_utils_list import EmailUtilsList
+    from views.users.email_utils_list import EmailUtilsList
 
     email_name = call.data
     await state.update_data({
@@ -63,10 +61,10 @@ async def open_mail(call: types.CallbackQuery, state: FSMContext):
     })
     data = await state.get_data()
     # Mail database
-    mail = await Mail.get(user_id=data['user_id'], email=data['email_name'],
+    mail = await email_get(user_id=data['user_id'], email=data['email_name'],
                           email_type=data['email_type'], is_active=True)
     # Mail Client
-    email = Client(mail.email, mail.password, mail.email_type)
+    email = Client(mail['email'], mail['password'], mail['email_type'])
     if email.check_email() == 'OK':
         await Session.email_util_name.set()
         await state.update_data({
