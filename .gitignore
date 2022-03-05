@@ -1,12 +1,12 @@
-.idea/
-venv/
-__pycache__/
+.idea
+venv
+__pycache__
 
-db/.idea/
-db/__pycache__/
-db/venv/
+db/.idea
+db/__pycache__
+db/venv
 
-bot/.idea/
-bot/venv/
-bot/__pycache__/
+bot/.idea
+bot/venv
+bot/__pycache__
 
