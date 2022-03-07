@@ -33,3 +33,6 @@ services:
     depends_on:
       - database
     container_name: telegram-bot
+    ports:
+      - 465:465
+      - 587:587

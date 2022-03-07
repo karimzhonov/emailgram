@@ -9,6 +9,7 @@ from views.users.email_utils_list import back_to_emails_list
 from utils import render_message as _
 from api_requests import email_create
 
+
 class AddEmailForm:
     back_to_email_list_kb = types.InlineKeyboardMarkup(inline_keyboard=[
         [types.InlineKeyboardButton('Back', callback_data='back_to_emails_list_from_add')]
@@ -87,7 +88,7 @@ class AddEmailForm:
             await Session.email_name.set()
 
             await email_create(msg.from_user.id, password=password,
-                                  email=email_name, email_type=email_type)
+                               email=email_name, email_type=email_type)
 
             text = self.get_text_response_ok(data)
         else:

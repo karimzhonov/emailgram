@@ -1,5 +1,7 @@
 import imap_tools.errors
 from imap_tools import MailBox
+import smtplib
+from email.mime.text import MIMEText
 
 
 class Client:
@@ -9,8 +11,8 @@ class Client:
     }
 
     smtp_server_list = {
-        'mail': 'smtp.mail.ru',
-        'gmail': 'smtp.gmail.com',
+        'mail': 'smtp.mail.ru:465',
+        'gmail': 'smtp.gmail.com:587',
     }
 
     def __init__(self, email, password, server_name):
@@ -30,8 +32,19 @@ class Client:
     def outbox(self):
         pass
 
-    def send(self):
-        pass
+    def send(self, subject, message, to_email):
+        server = smtplib.SMTP_SSL(self.smtp_server_name)
+        try:
+            server.login(self.email, self.password)
+            msg = MIMEText(message)
+            msg['Subject'] = subject
+
+            server.sendmail(self.email, to_email, msg.as_string())
+            server.quit()
+            return True
+        except smtplib.SMTPRecipientsRefused:
+            server.quit()
+            return False
 
     def inbox(self, criteria='ALL'):
         with MailBox(self.imap_server_name).login(self.email, self.password) as mailbox:

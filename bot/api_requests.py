@@ -39,3 +39,8 @@ async def email_create(user_id, **kwargs):
         'user_id': user_id,
         'data': kwargs
     })
+
+async def remove_email(**kwargs):
+    return await get(f'{HOST}/removemail/', data={
+        'data': kwargs,
+    })

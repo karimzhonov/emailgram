@@ -52,3 +52,15 @@ class CreateMail(RetrieveUpdateDestroyAPIView):
         data = json['data']
         user_id = json['user_id']
         return Mail.objects.create(user_id=user_id, **data)
+
+class RemoveMail(RetrieveUpdateDestroyAPIView):
+    serializer_class = MailSerializers
+    queryset = Mail.objects.all()
+
+    def get_object(self):
+        json = self.request.data
+        data = json['data']
+        mail = Mail.objects.get(**data)
+        mail.is_active = False
+        mail.save()
+        return mail

@@ -51,6 +51,7 @@ def _set_router(*args):
 def render_message(*router,
                    subject: str = '',
                    from_: str = '',
+                   to: str = '',
                    date: str = '',
                    body: str = '',
                    footer: str = ''):
@@ -64,15 +65,17 @@ def render_message(*router,
     router = f'<code>/{_set_router(*router)}/</code>\n\n' if router else ''
     subject = f'<b>Subject:</b> {subject}\n' if subject else ''
     from_ = f'<b>From:</b> {from_}\n' if from_ else ''
+    to = f'<b>To:</b> {to}\n' if to else ''
     date = f'<b>Date:</b> {date}\n\n' if date else ''
     body = f'{body}\n' if body else ''
-    footer = f'<i>{footer}</i>\n' if footer else ''
+    footer = f'\n<i>{footer}</i>\n' if footer else ''
 
     mark = ''.join([
         app_name,
         router,
         subject,
         from_,
+        to,
         date,
         body,
         footer,

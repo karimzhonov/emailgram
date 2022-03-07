@@ -19,9 +19,16 @@ class Session(StatesGroup):
     adding_email_password = State()
     # Mail Client
     email_client = State()
+    email_msg_full = State()
     # Last msg data
     last_msg_text = State()
     last_msg_kb = State()
+    # New Email Message
+    new_email_message = State()
+    new_email_message_to_email = State()
+    new_email_message_subject = State()
+    new_email_message_message = State()
+    new_email_message_result = State()
 
 
 

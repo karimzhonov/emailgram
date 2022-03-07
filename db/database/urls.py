@@ -7,4 +7,5 @@ urlpatterns = [
     path('mail/', MailGet.as_view()),
     path('mails/', MailsGet.as_view()),
     path('newmail/', CreateMail.as_view()),
+    path('removemail/', RemoveMail.as_view())
 ]
